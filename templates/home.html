@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Netflix Clone - Home</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h2>NETFLIX</h2>
+        <nav>
+            <a href="/home">HOME</a>
+            <a href="/search">BROWSE</a>
+            <a href="/watchlist">MY LIST</a>
+            <a href="/profile">PROFILE</a>
+            <button class="logout-btn" onclick="window.location.href='/logout'">LOGOUT</button>
+        </nav>
+    </header>
+
+    <!-- FEATURED MOVIE (First Movie) -->
+    {%if movies %}
+    {% set featured = movies[0] %}
+    <div class="hero">
+        <img src="{{featured[6]}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+        <div style="position: relative; z-index: 2; padding: 100px 50px 50px;">
+            <h1 style="font-size: 3.5em; margin-bottom: 15px;">{{featured[1]| upper}}</h1>
+            <p style="font-size: 1.1em; margin-bottom: 20px;">⭐ {{featured[5]}}/10 | ⏱️ {{featured[7]}}min | 📅 {{featured[4]}} | 🎬 {{featured[3]}}</p>
+            <p style="margin-bottom: 20px; max-width: 600px; line-height: 1.6;">{{featured[2]}}</p>
+            <p style="margin-bottom: 20px; color: #b3b3b3;"><strong>Director:</strong> {{featured[8]}}</p>
+            <div class="search-bar" style="margin: 0;">
+                <a href="/movie/{{featured[0]}}" class="btn btn-play" style="text-decoration: none; background: white; color: black; padding: 12px 30px; border-radius: 4px; display: inline-flex; align-items: center; gap: 10px; font-weight: bold;">
+                    ▶ WATCH NOW
+                </a>
+                <button class="btn btn-add" onclick="watchlistBtn({{featured[0]}})" id="watchlist-btn-{{featured[0]}}" style="background: rgba(255, 255, 255, 0.25); color: white; border: 2px solid white;">
+                    ➕ ADD TO LIST
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- CONTINUE WATCHING -->
+    {% if continue_watching %}
+    <div class="category">
+        <h3>▶️ CONTINUE WATCHING</h3>
+        <div class="movies">
+            {% for m in continue_watching %}
+            <div class="card">
+                <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                    <img src="{{m[6]}}" alt="{{m[1]}}">
+                    <div class="card-info">
+                        <h3>{{m[1]}} {{m[13]}}</h3>
+                        <div class="card-rating">⭐ {{m[5]}}/10 | ⏱️ {{m[7]}}min</div>
+                        <div class="card-genre">{{m[4]}}</div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- TRENDING SECTION -->
+    <div class="category">
+        <h3>🔥 TRENDING NOW</h3>
+        <div class="movies">
+            {% for m in movies[0:8] %}
+            <div class="card">
+                <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                    <img src="{{m[6]}}" alt="{{m[1]}}">
+                    <div class="card-info">
+                        <h3>{{m[1]}} {{m[13]}}</h3>
+                        <div class="card-rating">⭐ {{m[5]}}/10</div>
+                        <div class="card-genre">{{m[3]}}</div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ACTION & ADVENTURE -->
+    <div class="category">
+        <h3>⚡ ACTION & ADVENTURE</h3>
+        <div class="movies">
+            {% for m in movies %}
+                {% if 'Action' in m[3] or 'Adventure' in m[3] %}
+                <div class="card">
+                    <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                        <img src="{{m[6]}}" alt="{{m[1]}}">
+                        <div class="card-info">
+                            <h3>{{m[1]}} {{m[13]}}</h3>
+                            <div class="card-rating">⭐ {{m[5]}}/10 | {{m[7]}}min</div>
+                            <div class="card-genre">{{m[3]}}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- DRAMA -->
+    <div class="category">
+        <h3>🎭 DRAMA</h3>
+        <div class="movies">
+            {% for m in movies %}
+                {% if 'Drama' in m[3] %}
+                <div class="card">
+                    <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                        <img src="{{m[6]}}" alt="{{m[1]}}">
+                        <div class="card-info">
+                            <h3>{{m[1]}} {{m[13]}}</h3>
+                            <div class="card-rating">⭐ {{m[5]}}/10 | {{m[7]}}min</div>
+                            <div class="card-genre">{{m[3]}}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- SCI-FI & FANTASY -->
+    <div class="category">
+        <h3>🚀 SCI-FI & FANTASY</h3>
+        <div class="movies">
+            {% for m in movies %}
+                {% if 'Science Fiction' in m[3] or 'Fantasy' in m[3] %}
+                <div class="card">
+                    <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                        <img src="{{m[6]}}" alt="{{m[1]}}">
+                        <div class="card-info">
+                            <h3>{{m[1]}} {{m[13]}}</h3>
+                            <div class="card-rating">⭐ {{m[5]}}/10 | {{m[7]}}min</div>
+                            <div class="card-genre">{{m[3]}}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- THRILLER & MYSTERY -->
+    <div class="category">
+        <h3>🔎 THRILLER & MYSTERY</h3>
+        <div class="movies">
+            {% for m in movies %}
+                {% if 'Thriller' in m[3] or 'Mystery' in m[3] or 'Crime' in m[3] %}
+                <div class="card">
+                    <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                        <img src="{{m[6]}}" alt="{{m[1]}}">
+                        <div class="card-info">
+                            <h3>{{m[1]}} {{m[13]}}</h3>
+                            <div class="card-rating">⭐ {{m[5]}}/10 | {{m[7]}}min</div>
+                            <div class="card-genre">{{m[3]}}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function watchlistBtn(movieId) {
+            const btn = document.getElementById('watchlist-btn-' + movieId);
+            fetch(`/api/watchlist/add/${movieId}`, {
+                method: 'POST'
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    btn.textContent = '✓ IN LIST';
+                    btn.style.background = 'rgba(255, 255, 255, 0.5)';
+                }
+            }).catch(e => alert('Error: ' + e));
+        }
+    </script>
+</body>
+</html>

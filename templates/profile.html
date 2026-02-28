@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Netflix Clone - My Profile</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h2>NETFLIX</h2>
+        <nav>
+            <a href="/home">HOME</a>
+            <a href="/search">BROWSE</a>
+            <a href="/watchlist">MY LIST</a>
+            <a href="/profile" style="border-bottom: 2px solid #e50914;">PROFILE</a>
+            <button class="logout-btn" onclick="window.location.href='/logout'">LOGOUT</button>
+        </nav>
+    </header>
+
+    <div class="profile-container" style="padding: 50px;">
+        <div class="profile-header">
+            <h1 style="font-size: 2.5em;">👤 {{username}}</h1>
+            <p style="margin-top: 10px; color: #ccc; font-size: 1.1em;">Welcome back! Continue your journey in entertainment</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(229, 9, 20, 0.05)); padding: 30px; border-radius: 8px; margin-bottom: 30px; border: 1px solid rgba(229, 9, 20, 0.3);">
+            <h3 style="margin-bottom: 20px; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; font-size: 14px;">ACCOUNT SETTINGS</h3>
+            <div style="display: grid; gap: 20px;">
+                <div style="padding-bottom: 20px; border-bottom: 1px solid #333; display: grid; grid-template-columns: 200px 1fr;">
+                    <p style="font-size: 13px; color: #999; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">👤 PROFILE NAME</p>
+                    <p style="font-size: 16px; color: #fff;">{{username}}</p>
+                </div>
+                <div style="padding-bottom: 20px; border-bottom: 1px solid #333; display: grid; grid-template-columns: 200px 1fr;">
+                    <p style="font-size: 13px; color: #999; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">✓ STATUS</p>
+                    <p style="font-size: 16px; color: #4caf50; font-weight: 700;">ACTIVE PREMIUM</p>
+                </div>
+                <div style="padding-bottom: 20px; border-bottom: 1px solid #333; display: grid; grid-template-columns: 200px 1fr;">
+                    <p style="font-size: 13px; color: #999; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">📅 MEMBER SINCE</p>
+                    <p style="font-size: 16px; color: #fff;">February 2026</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 200px 1fr;">
+                    <p style="font-size: 13px; color: #999; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">🎬 PLAN</p>
+                    <p style="font-size: 16px; color: #fff;"><strong>Premium</strong> - All Access</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="watchlist-section">
+            <h3 style="font-size: 1.5em; margin-bottom: 20px; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">🎬 YOUR WATCHLIST</h3>
+            {% if watchlist %}
+            <div class="movies" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                {% for m in watchlist[:6] %}
+                <div class="card">
+                    <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                        <img src="{{m[6]}}" alt="{{m[1]}}">
+                        <div class="card-info">
+                            <h3>{{m[1]}} {{m[13]}}</h3>
+                            <div class="card-rating">⭐ {{m[5]}}/10</div>
+                            <div class="card-genre">{{m[4]}}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="/watchlist" style="display: inline-block; margin-top: 20px; padding: 12px 25px; background: #e50914; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">VIEW ALL WATCHLIST</a>
+            {% else %}
+            <div style="background: rgba(229, 9, 20, 0.05); padding: 50px; border-radius: 8px; border-left: 5px solid #e50914; text-align: center;">
+                <p style="color: #999; margin-bottom: 20px; font-size: 15px;">Your watchlist is empty</p>
+                <a href="/home" class="btn btn-play" style="text-decoration: none; display: inline-block;">START EXPLORING</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 50px; padding: 30px; background: rgba(229, 9, 20, 0.1); border-radius: 8px; border-left: 5px solid #e50914;">
+            <h3 style="margin-bottom: 15px; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; font-size: 14px;">RECOMMENDATIONS</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">Based on your activity, explore these genres:</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="/search?q=Action" style="background: #333; padding: 8px 15px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); text-decoration: none;">ACTION</a>
+                <a href="/search?q=Drama" style="background: #333; padding: 8px 15px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); text-decoration: none;">DRAMA</a>
+                <a href="/search?q=Science Fiction" style="background: #333; padding: 8px 15px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); text-decoration: none;">SCI-FI</a>
+                <a href="/search?q=Thriller" style="background: #333; padding: 8px 15px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); text-decoration: none;">THRILLER</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #333; display: flex; gap: 15px; justify-content: center;">
+            <a href="/home" class="btn" style="text-decoration: none; padding: 12px 30px; background: #222; border: 2px solid #e50914; color: #e50914;">← BACK TO HOME</a>
+            <button class="btn" onclick="alert('Thank you for using Netflix Clone!')" style="padding: 12px 30px; background: #e50914; color: white; border: none;">⚙️ SETTINGS</button>
+        </div>
+    </div>
+</body>
+</html>

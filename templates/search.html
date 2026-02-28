@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Netflix Clone - Search Results</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h2>NETFLIX</h2>
+        <nav>
+            <a href="/home">HOME</a>
+            <a href="/search">BROWSE</a>
+            <a href="/profile">MY PROFILE</a>
+            <button class="logout-btn" onclick="window.location.href='/logout'">LOGOUT</button>
+        </nav>
+    </header>
+
+    <div class="category" style="padding-top: 100px;">
+        <div style="margin-bottom: 30px;">
+            <form style="display: flex; gap: 10px; margin-bottom: 30px;">
+                <input type="text" name="q" value="{{query}}" placeholder="Search movies, shows, actors..." style="flex: 1; padding: 12px 15px; background: #333; border: 1px solid #555; border-radius: 4px; color: white; font-size: 14px;">
+                <button type="submit" class="btn btn-add" style="background: #e50914; color: white; border: none;">SEARCH</button>
+            </form>
+        </div>
+
+        {% if query %}
+            <h3 style="margin-bottom: 30px;">Search Results for "<span style="color: #e50914;">{{query}}</span>"</h3>
+        {% else %}
+            <h3 style="margin-bottom: 30px;">📚 BROWSE ALL</h3>
+        {% endif %}
+        
+        {% if movies %}
+            <div class="movies">
+                {% for m in movies %}
+                <div class="card">
+                    <a href="/movie/{{m[0]}}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+                        <img src="{{m[6]}}" alt="{{m[1]}}">
+                        <div class="card-info">
+                            <h3>{{m[1]}}</h3>
+                            <div class="card-rating">⭐ {{m[5]}}/10</div>
+                            <div class="card-genre">{{m[3]}}</div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 60px 20px;">
+                <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 20px;">
+                    {% if query %}
+                        😕 No results found for "<span style="color: #e50914;">{{query}}</span>"
+                    {% else %}
+                        No movies available.
+                    {% endif %}
+                </p>
+                {% if query %}
+                    <a href="/search" class="btn btn-back" style="display: inline-block; text-decoration: none;">← BACK TO BROWSE</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

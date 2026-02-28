@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Netflix Clone - {{movie[1]}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h2>NETFLIX</h2>
+        <nav>
+            <a href="/home">← HOME</a>
+            <a href="/search">BROWSE</a>
+            <a href="/watchlist">MY LIST</a>
+            <a href="/profile">PROFILE</a>
+            <button class="logout-btn" onclick="window.location.href='/logout'">LOGOUT</button>
+        </nav>
+    </header>
+
+    <div class="movie-detail">
+        <div class="movie-header">
+            <div class="movie-poster">
+                <img src="{{movie[6]}}" alt="{{movie[1]}}">
+            </div>
+            <div class="movie-info">
+                <h1>{{movie[1]}} {{movie[13]}}</h1>
+                
+                <div class="movie-meta">
+                    <span class="rating">★ {{movie[5]}}/10</span>
+                    <span>⏱️ {{movie[7]}} min</span>
+                    <span>📅 {{movie[4]}}</span>
+                    <span>🔞 {{movie[11]}}</span>
+                    <span>🎬 {{movie[3]}}</span>
+                </div>
+
+                <p class="movie-description" style="margin: 20px 0;">
+                    {{movie[2]}}
+                </p>
+
+                <div style="margin: 25px 0; padding: 20px 0; border-top: 1px solid #333; border-bottom: 1px solid #333;">
+                    <p style="margin-bottom: 10px;"><strong>Director:</strong> {{movie[8]}}</p>
+                    <p style="margin-bottom: 10px;"><strong>Cast:</strong> {{movie[9]}}</p>
+                    <p style="margin-bottom: 10px;"><strong>Languages:</strong> {{movie[10]}}</p>
+                    <p style="margin-bottom: 0;"><strong>Country:</strong> {{movie[12]}}</p>
+                </div>
+
+                <div class="btn-group" style="margin-top: 25px;">
+                    <button class="btn btn-play" onclick="playMovie('{{movie[1]}}')">
+                        ▶ PLAY
+                    </button>
+                    <button class="btn btn-add" onclick="toggleWatchlist({{movie[0]}})" id="watchlist-toggle" style="{% if in_watchlist %}background: rgba(255, 255, 255, 0.5);{% endif %}">
+                        {% if in_watchlist %}✓ IN MY LIST{% else %}➕ ADD TO LIST{% endif %}
+                    </button>
+                </div>
+
+                <!-- RATING SECTION -->
+                <div style="margin-top: 30px; padding: 20px; background: rgba(229, 9, 20, 0.1); border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; text-transform: uppercase; font-size: 14px; letter-spacing: 1px;">RATE THIS MOVIE</h3>
+                    
+                    {% if user_avg_rating %}
+                    <p style="margin-bottom: 15px; color: #b3b3b3;">
+                        <span style="color: #e50914; font-weight: bold;">{{user_avg_rating|round(1)}}/10</span> 
+                        <span style="font-size: 12px;">Average rating from viewers</span>
+                    </p>
+                    {% endif %}
+                    
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                        {% for i in range(1, 11) %}
+                        <button class="rating-btn" onclick="rateMovie({{i}}, {{movie[0]}})" 
+                                style="width: 40px; height: 40px; border: 2px solid #e50914; background: transparent; color: #e50914; border-radius: 50%; cursor: pointer; font-weight: bold; {% if user_rating and user_rating[0] == i %}background: #e50914; color: white;{% endif %}"
+                                id="rating-{{i}}">
+                            {{i}}
+                        </button>
+                        {% endfor %}
+                    </div>
+
+                    <textarea id="review-text" placeholder="Add a review (optional)..." style="width: 100%; height: 80px; padding: 10px; margin-top: 10px; background: #222; color: white; border: 1px solid #444; border-radius: 4px;">{% if user_rating and user_rating[1] %}{{user_rating[1]}}{% endif %}</textarea>
+                    <button onclick="submitReview({{movie[0]}})" style="margin-top: 10px; padding: 10px 20px; background: #e50914; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">SUBMIT RATING</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 60px; padding: 0;">
+            <h3 style="margin-bottom: 25px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">MORE IN {{movie[3].split('|')[0]}}</h3>
+            <div style="background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.05)); padding: 25px; border-radius: 12px; border-left: 5px solid #e50914;">
+                <p style="font-size: 16px; color: var(--text-primary); font-weight: 600;">Explore more titles in the {{movie[3].split('|')[0]}} genre!</p>
+                <a href="/search?q={{movie[3].split('|')[0]}}" class="btn btn-back" style="display: inline-block; margin-top: 15px; text-decoration: none;">EXPLORE GENRE</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function playMovie(title) {
+            fetch(`/api/watch-history/add/{{movie[0]}}`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({progress: 0})});
+            alert('🎬 Now Playing: ' + title + '\n\nEnjoy your movie!');
+        }
+
+        function toggleWatchlist(movieId) {
+            const btn = document.getElementById('watchlist-toggle');
+            {% if in_watchlist %}
+            fetch(`/api/watchlist/remove/${movieId}`, {method: 'POST'})
+                .then(r => r.json()).then(data => {
+                    btn.textContent = '➕ ADD TO LIST';
+                    btn.style.background = 'var(--primary-color)';
+                });
+            {% else %}
+            fetch(`/api/watchlist/add/${movieId}`, {method: 'POST'})
+                .then(r => r.json()).then(data => {
+                    btn.textContent = '✓ IN MY LIST';
+                    btn.style.background = 'rgba(255, 255, 255, 0.5)';
+                });
+            {% endif %}
+        }
+
+        function rateMovie(rating, movieId) {
+            const buttons = document.querySelectorAll('.rating-btn');
+            buttons.forEach(btn => btn.style.background = 'transparent');
+            document.getElementById('rating-' + rating).style.background = '#e50914';
+            document.getElementById('rating-' + rating).style.color = 'white';
+        }
+
+        function submitReview(movieId) {
+            let rating = 0;
+            for(let i = 1; i <= 10; i++) {
+                if(document.getElementById('rating-' + i).style.background === 'rgb(229, 9, 20)') {
+                    rating = i;
+                    break;
+                }
+            }
+            if(rating === 0) {
+                alert('Please select a rating');
+                return;
+            }
+            const review = document.getElementById('review-text').value;
+            fetch(`/api/rating/add/${movieId}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({rating: rating, review: review})
+            }).then(r => r.json()).then(data => {
+                alert('Rating submitted! Thank you.');
+            });
+        }
+    </script>
+</body>
+</html>
