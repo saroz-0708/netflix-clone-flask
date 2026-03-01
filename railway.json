@@ -1,0 +1,4 @@
+{
+  "buildCommand": "pip install -r requirements.txt",
+  "startCommand": "gunicorn wsgi:app --workers 2 --threads 2 --timeout 60"
+}
